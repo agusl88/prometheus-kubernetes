@@ -33,23 +33,28 @@ if [[ $deploy_gce_ingress =~ ^([yY][eE][sS]|[yY])$ ]]; then
 
   # Input GCE SSL Cert name
   echo
-  echo -e "${GREEN}Type the GCE Global Static IP name."
+  echo -e "${GREEN}Do you want to use an existing GCP SSL certificate?"
   tput sgr0
 
-  read -p "SSL Cert name: " cert_name
+  read -p "Y/N [N]: " ssl
+  if [[ $ssl =~ ^([yY][eE][sS]|[yY])$ ]]; then
+    read -p "SSL Cert name: " cert_name
+    sed -i -e 's/gce_cert_name/'"$cert_name"'/g' ./gce-ingress.yaml
+    
+    # Allow/disallow HTTP
+    echo
+    echo -e "${GREEN}Do you want to allow HTTP?"
+    tput sgr0
 
-  sed -i -e 's/gce_cert_name/'"$cert_name"'/g' ./gce-ingress.yaml
-
-  # Allow/disallow HTTP
-  echo
-  echo -e "${GREEN}Do you want to allow HTTP?"
-  tput sgr0
-
-  read -p "Y/N [N]: " allow_http
-  if [[ $allow_http =~ ^([yY][eE][sS]|[yY])$ ]]; then
-    sed -i -e 's/allow_http/'"true"'/g' ./gce-ingress.yaml
+    read -p "Y/N [N]: " allow_http
+    if [[ $allow_http =~ ^([yY][eE][sS]|[yY])$ ]]; then
+        sed -i -e 's/allow_http/'"true"'/g' ./gce-ingress.yaml
+    else
+        sed -i -e 's/allow_http/'"false"'/g' ./gce-ingress.yaml
+    fi
   else
-    sed -i -e 's/allow_http/'"false"'/g' ./gce-ingress.yaml
+    sed '/ingress.gcp.kubernetes.io/pre-shared-cert: '"gce_cert_name"'/d' ./gce-ingress.yaml
+    sed -i -e 's/allow_http/'"true"'/g' ./gce-ingress.yaml
   fi
 
   # Want to enable IAP?
@@ -60,6 +65,10 @@ if [[ $deploy_gce_ingress =~ ^([yY][eE][sS]|[yY])$ ]]; then
   read -p "Y/N [N]: " iap_enabled
   if [[ $iap_enabled =~ ^([yY][eE][sS]|[yY])$ ]]; then
     sed -i -e 's/iap_enabled/'"true"'/g' ./gce-ingress.yaml
+    read -p "OAuth Client ID: " client_id
+    sed -i -e 's/oauth_client_id/'"$client_id"'/g' ./gce-ingress.yaml
+    read -p "OAuth Client Secret: " client_secret
+    sed -i -e 's/oauth_client_secret/'"$client_secret"'/g' ./gce-ingress.yaml
   else
     sed -i -e 's/iap_enabled/'"false"'/g' ./gce-ingress.yaml
   fi

@@ -10,26 +10,26 @@ metadata:
     cloud.google.com/service-settings: |
       {
         "prometheus.domain_name": {
-            "iap": {
-              "enabled": true,
-              "oauth2ClientId": "16509401209-9hdnmb77qd4pt063k7j8ok3cc4fn29mk.apps.googleusercontent.com",
-              "oauth2ClientSecret": "5jkqrh3m3zYx-I86vXK9PP1x"
-            }
+          "iap": {
+            "enabled": iap_enabled,
+            "oauth2ClientId": "oauth_client_id",
+            "oauth2ClientSecret": "oauth_client_secret"
+          }
         },
         "alertmanager.domain_name": {
-            "iap": {
-              "enabled": true,
-              "oauth2ClientId": "16509401209-9hdnmb77qd4pt063k7j8ok3cc4fn29mk.apps.googleusercontent.com",
-              "oauth2ClientSecret": "5jkqrh3m3zYx-I86vXK9PP1x"
-            }
+          "iap": {
+            "enabled": iap_enabled,
+            "oauth2ClientId": "oauth_clientid",
+            "oauth2ClientSecret": "oauth_client_secret"
+          }
         },
         "grafana.domain_name": {
-            "iap": {
-              "enabled": true,
-              "oauth2ClientId": "16509401209-9hdnmb77qd4pt063k7j8ok3cc4fn29mk.apps.googleusercontent.com",
-              "oauth2ClientSecret": "5jkqrh3m3zYx-I86vXK9PP1x"
-            }
-        }
+          "iap": {
+            "enabled": iap_enabled,
+            "oauth2ClientId": "oauth_clientid",
+            "oauth2ClientSecret": "oauth_client_secret"
+          }
+        },
       }
 spec:
   backend:
