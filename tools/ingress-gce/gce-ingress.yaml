@@ -1,0 +1,59 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: prometheus
+  namespace: monitoring
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: "gce_static_ip_name"
+    ingress.gcp.kubernetes.io/pre-shared-cert: 'gce_cert_name'
+    kubernetes.io/ingress.allow-http: "allow_http"
+    cloud.google.com/service-settings: |
+      {
+        "prometheus.domain_name": {
+            "iap": {
+              "enabled": true,
+              "oauth2ClientId": "16509401209-9hdnmb77qd4pt063k7j8ok3cc4fn29mk.apps.googleusercontent.com",
+              "oauth2ClientSecret": "5jkqrh3m3zYx-I86vXK9PP1x"
+            }
+        },
+        "alertmanager.domain_name": {
+            "iap": {
+              "enabled": true,
+              "oauth2ClientId": "16509401209-9hdnmb77qd4pt063k7j8ok3cc4fn29mk.apps.googleusercontent.com",
+              "oauth2ClientSecret": "5jkqrh3m3zYx-I86vXK9PP1x"
+            }
+        },
+        "grafana.domain_name": {
+            "iap": {
+              "enabled": true,
+              "oauth2ClientId": "16509401209-9hdnmb77qd4pt063k7j8ok3cc4fn29mk.apps.googleusercontent.com",
+              "oauth2ClientSecret": "5jkqrh3m3zYx-I86vXK9PP1x"
+            }
+        }
+      }
+spec:
+  backend:
+    serviceName: grafana
+    servicePort: 3000
+  rules:
+  - host: prometheus.domain_name
+    http:
+      paths:
+      - path: /*
+        backend:
+          serviceName: prometheus-k8s
+          servicePort: 9090
+  - host: alertmanager.domain_name
+    http:
+      paths:
+      - path: /*
+        backend:
+          serviceName: alertmanager-main
+          servicePort: 9093
+  - host: grafana.domain_name
+    http:
+      paths:
+      - path: /*
+        backend:
+          serviceName: grafana
+          servicePort: 3000

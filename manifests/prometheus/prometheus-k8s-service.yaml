@@ -5,6 +5,7 @@ metadata:
     prometheus: k8s
   name: prometheus-k8s
 spec:
+  type: NodePort
   ports:
   - name: web
     port: 9090
